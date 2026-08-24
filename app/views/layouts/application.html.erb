@@ -1,28 +1,39 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "MeowPay" %></title>
+    <title><%= content_for(:title) || 'MeowPay' %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <%= stylesheet_link_tag :app %>
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+
+    <%= stylesheet_link_tag "application" %>
+    <%= javascript_include_tag "application", defer: true %>
   </head>
 
   <body>
-    <% if notice.present? %>
-      <p><%= notice %></p>
-    <% end %>
-    <% if alert.present? %>
-      <p><%= alert %></p>
-    <% end %>
+    <div class="shell">
+      <% if notice.present? %>
+        <div class="flash flash-notice" role="status">
+          <span class="flash-message"><%= notice %></span>
+          <button type="button" class="flash-dismiss" aria-label="Dismiss">&times;</button>
+        </div>
+      <% end %>
+      <% if alert.present? %>
+        <div class="flash flash-alert" role="alert">
+          <span class="flash-message"><%= alert %></span>
+          <button type="button" class="flash-dismiss" aria-label="Dismiss">&times;</button>
+        </div>
+      <% end %>
 
-    <%= yield %>
+      <%= yield %>
+    </div>
   </body>
 </html>

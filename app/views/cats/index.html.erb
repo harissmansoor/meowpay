@@ -1,9 +1,21 @@
-<h1>Cats</h1>
+<% content_for :title, 'MeowPay' %>
 
-<ul>
-  <% @cats.each do |cat| %>
-    <li>
-      <%= link_to "#{cat.name} (#{cat.treats_balance} treats)", cat_path(cat) %>
-    </li>
-  <% end %>
-</ul>
+<header class="topbar">
+  <span class="brand">MeowPay</span>
+</header>
+
+<section class="picker">
+  <h1 class="picker-title">Who’s sending treats?</h1>
+  <p class="picker-lede">Pick a cat to open their wallet.</p>
+
+  <ul class="picker-grid">
+    <% @cats.each do |cat| %>
+      <li>
+        <%= link_to cat_path(cat), class: 'picker-card' do %>
+          <span class="picker-name"><%= cat.name %></span>
+          <span class="picker-balance"><%= cat.treats_balance %> treats</span>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</section>

@@ -1,58 +1,88 @@
-<p><%= link_to 'All cats', cats_path %></p>
+<% content_for :title, "#{@cat.name} · MeowPay" %>
 
-<h1><%= @cat.name %></h1>
-<p>Balance: <%= @cat.treats_balance %> treats</p>
+<header class="topbar">
+  <a class="brand" href="<%= cats_path %>">MeowPay</a>
+  <a class="topbar-link" href="<%= cats_path %>">All cats</a>
+</header>
 
-<h2>Send treats</h2>
-<%= form_with url: transfers_path, scope: :transfer do |f| %>
-  <%= f.hidden_field :sender_id, value: @cat.id %>
-  <p>
-    <%= f.label :recipient_id, 'Recipient' %>
-    <%= f.collection_select :recipient_id, @cats, :id, :name %>
-  </p>
-  <p>
-    <%= f.label :amount %>
-    <%= f.number_field :amount, min: 1, step: 1, required: true %>
-  </p>
-  <p><%= f.submit 'Send' %></p>
-<% end %>
-
-<h2>Sent</h2>
-<table>
-  <thead>
-    <tr>
-      <th>To</th>
-      <th>Amount</th>
-      <th>When</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @sent_transfers.each do |transfer| %>
-      <tr>
-        <td><%= transfer.recipient.name %></td>
-        <td><%= transfer.amount %></td>
-        <td><%= transfer.created_at %></td>
-      </tr>
+<section class="switcher" aria-label="Acting cat">
+  <p class="switcher-label">Acting as</p>
+  <div class="switcher-row">
+    <span class="switcher-current"><%= @cat.name %></span>
+    <% @cats.each do |cat| %>
+      <%= link_to cat.name, cat_path(cat), class: 'switcher-link' %>
     <% end %>
-  </tbody>
-</table>
+  </div>
+</section>
 
-<h2>Received</h2>
-<table>
-  <thead>
-    <tr>
-      <th>From</th>
-      <th>Amount</th>
-      <th>When</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @received_transfers.each do |transfer| %>
-      <tr>
-        <td><%= transfer.sender.name %></td>
-        <td><%= transfer.amount %></td>
-        <td><%= transfer.created_at %></td>
-      </tr>
+<div class="wallet">
+  <section class="balance" aria-label="Treat balance">
+    <p class="balance-eyebrow">Treat balance</p>
+    <p class="balance-name"><%= @cat.name %></p>
+    <p class="balance-amount"><%= @cat.treats_balance %></p>
+    <p class="balance-unit">treats</p>
+  </section>
+
+  <section class="send" aria-label="Send treats">
+    <h2 class="send-title">Send treats</h2>
+    <%= form_with url: transfers_path, scope: :transfer, class: 'send-form' do |f| %>
+      <%= f.hidden_field :sender_id, value: @cat.id %>
+      <div class="field">
+        <%= f.label :recipient_id, 'Recipient' %>
+        <%= f.collection_select :recipient_id, @cats, :id, :name %>
+      </div>
+      <div class="field">
+        <%= f.label :amount, 'Amount' %>
+        <%= f.number_field :amount, min: 1, step: 1, required: true, placeholder: '0' %>
+      </div>
+      <%= f.submit 'Send', class: 'btn' %>
     <% end %>
-  </tbody>
-</table>
+  </section>
+</div>
+
+<section class="history" aria-label="Recent transfers">
+  <h2 class="history-title">Recent transfers</h2>
+
+  <% if @recent_transfers.any? %>
+    <div class="history-table-wrap">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Sender</th>
+            <th>Recipient</th>
+            <th>Amount</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @recent_transfers.each do |transfer| %>
+            <tr>
+              <td><%= transfer.sender.name %></td>
+              <td><%= transfer.recipient.name %></td>
+              <td><%= transfer.amount %></td>
+              <td><%= transfer.created_at.strftime('%b %-d, %H:%M') %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <ul class="history-list">
+      <% @recent_transfers.each do |transfer| %>
+        <li class="history-item">
+          <p class="history-route">
+            <span><%= transfer.sender.name %></span>
+            <span class="history-arrow" aria-hidden="true">→</span>
+            <span><%= transfer.recipient.name %></span>
+          </p>
+          <p class="history-meta">
+            <span class="history-amt"><%= transfer.amount %> treats</span>
+            <span><%= transfer.created_at.strftime('%b %-d, %H:%M') %></span>
+          </p>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="history-empty">No transfers yet. Send a treat to get started.</p>
+  <% end %>
+</section>
