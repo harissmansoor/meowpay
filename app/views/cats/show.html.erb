@@ -1,0 +1,58 @@
+<p><%= link_to 'All cats', cats_path %></p>
+
+<h1><%= @cat.name %></h1>
+<p>Balance: <%= @cat.treats_balance %> treats</p>
+
+<h2>Send treats</h2>
+<%= form_with url: transfers_path, scope: :transfer do |f| %>
+  <%= f.hidden_field :sender_id, value: @cat.id %>
+  <p>
+    <%= f.label :recipient_id, 'Recipient' %>
+    <%= f.collection_select :recipient_id, @cats, :id, :name %>
+  </p>
+  <p>
+    <%= f.label :amount %>
+    <%= f.number_field :amount, min: 1, step: 1, required: true %>
+  </p>
+  <p><%= f.submit 'Send' %></p>
+<% end %>
+
+<h2>Sent</h2>
+<table>
+  <thead>
+    <tr>
+      <th>To</th>
+      <th>Amount</th>
+      <th>When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @sent_transfers.each do |transfer| %>
+      <tr>
+        <td><%= transfer.recipient.name %></td>
+        <td><%= transfer.amount %></td>
+        <td><%= transfer.created_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h2>Received</h2>
+<table>
+  <thead>
+    <tr>
+      <th>From</th>
+      <th>Amount</th>
+      <th>When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @received_transfers.each do |transfer| %>
+      <tr>
+        <td><%= transfer.sender.name %></td>
+        <td><%= transfer.amount %></td>
+        <td><%= transfer.created_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
