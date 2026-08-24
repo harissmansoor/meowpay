@@ -1,0 +1,9 @@
+/.bundle
+/.env*
+!/.env*.erb
+/log/*
+/tmp/*
+/storage/*
+/public/assets
+/config/*.key
+/vendor/bundle
