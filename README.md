@@ -4,37 +4,58 @@
 
 A small Rails app where one cat sends integer treats to another. You pick a cat, see their balance, send treats, and see recent transfers. The debit/credit happens in `TransferService` inside one Postgres transaction with row locks. UI is ERB. RSpec covers the service, including a concurrent double-spend case.
 
-Stack: Ruby 4.0.x, Rails 8.1, PostgreSQL, Puma, Propshaft, RSpec.
+Ruby 4.0.5, Rails 8.1.3.1, PostgreSQL 14+, Bundler 4.x. Ruby 3.2+ should also work with Rails 8.1.
 
 ## How to run (clean clone)
 
-**With Ruby** (needs Ruby, Bundler, Postgres):
-
 ```bash
-bundle install
-bin/rails db:create
-bin/rails db:migrate
-bin/rails db:seed
-bin/rails s
+git clone https://github.com/harissmansoor/meowpay.git
+cd meowpay
 ```
 
-http://localhost:3000
+Or: `git clone git@github.com:harissmansoor/meowpay.git`
 
-(`bin/rails db:prepare` is fine instead of create + migrate.)
+### Through Docker
 
-```bash
-bundle exec rspec
-```
-
-**With Docker** (needs Docker Desktop only):
+Docker Desktop required. No local Ruby/Postgres.
 
 ```bash
 docker compose up --build
 ```
 
-http://localhost:3000 — stop with `docker compose down`.
+http://localhost:3000
 
-Don’t run local `rails s` and Compose on port 3000 at the same time.
+```bash
+docker compose down
+```
+
+### Through Local Ruby
+
+You need Ruby 4.0.x (`ruby -v`), Bundler, and Postgres running.
+
+
+```bash
+bundle config set --local path 'vendor/bundle'
+bundle install
+```
+
+
+```bash
+bundle exec rails db:create
+bundle exec rails db:migrate
+bundle exec rails db:seed
+bundle exec rails s
+```
+
+http://localhost:3000
+
+`bundle exec rails db:prepare` works instead of create + migrate.
+
+```bash
+bundle exec rspec
+```
+
+Use `bundle exec` so you get the project gems. If `bundle install` failed partway, fix that before running rails. If `db:create` fails, start Postgres and retry (`meowpay_development` / `meowpay_test` in `config/database.yml`).
 
 ## Decisions and trade-offs
 
