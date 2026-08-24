@@ -1,0 +1,15 @@
+.git
+.gitignore
+log
+tmp
+storage
+vendor/bundle
+.bundle
+.env
+.env.*
+INTERVIEW.md
+.DS_Store
+.cursor
+spec
+config/master.key
+config/*.key
